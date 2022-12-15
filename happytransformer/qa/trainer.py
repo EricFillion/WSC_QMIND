@@ -154,8 +154,7 @@ class QATrainer(HappyTrainer):
             return contexts, questions, answers
         return contexts, questions
 
-    @staticmethod
-    def __add_end_idx(contexts, answers):
+    def __add_end_idx(self, contexts, answers):
         for answer, context in zip(answers, contexts):
 
             gold_text = answer['answer_text']
@@ -173,7 +172,12 @@ class QATrainer(HappyTrainer):
                 answer['answer_start'] = start_idx - 2
                 answer['answer_end'] = end_idx - 2  
             else:
-                print("error: implement skipping training answer")
+                self.logger.warning(f'End index may not be precise \n'
+                                    f'GOLD TEXT: {gold_text}\n'
+                                    f'START INDEX: {start_idx}\n'
+                                    f'END INDEX: {end_idx}\n\n'
+                                    )
+                answer['answer_end'] = end_idx
 
     def __add_token_positions(self, encodings, answers):
         start_positions = []
